@@ -67,9 +67,53 @@ export class CorreoCambiarContrasenaComponent {
             // le enviamos la contraseña
             console.log ('tengo el alumno');
             this.comServer.RecordarContrasena(alumno);
-            console.log("HOLAAAAAAAA")
             const alert = await this.alertController.create({
               header: 'En breve recibirás un email con tu contraseña',
+              buttons: [
+                {
+                  text: 'OK',
+                  handler: () => {
+                    console.log('Confirm Ok');
+                  }
+                }
+              ]
+            });
+            await alert.present();
+          } else {
+            const alert = await this.alertController.create({
+              header: 'No hay ningun alumno con este correo electronico',
+              buttons: ['OK']
+            });
+            await alert.present();
+          }
+      });
+    }
+
+  }
+
+
+  async EnviarCodigo() {
+
+    console.log ('voy a enviar codigo');
+    if (this.email === undefined) {
+      const alert = await this.alertController.create({
+        header: 'Atención: Introduce un correo de usuario en el formulario',
+        buttons: ['OK']
+      });
+      await alert.present();
+    } else {
+      this.peticionesAPI.DameAlumnoConCorreo(this.email)
+      .subscribe (async (res) => {
+          console.log ('tengo res');
+          console.log (res);
+          if (res[0] !== undefined) {
+            console.log ('tengo el alumno');
+            const alumno = res[0]; // Si es diferente de null, el alumno existe
+            // le enviamos la contraseña
+            console.log ('tengo el alumno');
+            this.comServer.EnviarCodigoContrasena(alumno);
+            const alert = await this.alertController.create({
+              header: 'En breve recibirás un email con el codigo para cambiar de contraseña',
               buttons: [
                 {
                   text: 'OK',
@@ -87,13 +131,18 @@ export class CorreoCambiarContrasenaComponent {
             });
             await alert.present();
           }
-      });
-    }
-
+    });
   }
+  }
+    
+  
 
-  VolverDeEnviarCorreo() {
+  VolverInicio() {
     this.route.navigateByUrl('/home');
+  } 
+  GoToCambiarContrasena() {
+    this.route.navigateByUrl('/cambiar-contrasena/:id/:token');
   } 
 
 }
+

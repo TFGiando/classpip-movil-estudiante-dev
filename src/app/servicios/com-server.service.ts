@@ -125,6 +125,14 @@ export class ComServerService {
     this.servidor.emit ('recordarPassword' , {email: alumno.Email, username: alumno.Username, password: alumno.Password});
   }
 
+  public EnviarCodigoContrasena(alumno: Alumno){
+    console.log(alumno)
+    console.log(alumno)
+    console.log(alumno)
+    console.log(alumno)
+    this.servidor.emit('enviarCodigoContrasena', {contrasena: alumno.Password, email: alumno.Email, id: alumno.id})
+  }
+
   //Para la función de avanzar pregunta Kahoot
   public EsperoAvanzarPregunta(): any {
     console.log("Me voy a subscribir");

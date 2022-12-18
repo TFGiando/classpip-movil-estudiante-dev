@@ -1291,5 +1291,12 @@ public PonerNotaAlumnoJuegoDeGeocaching(alumnoJuegoDeGeocaching: AlumnoJuegoDeGe
   public sendEmail(data){
     return this.http.post(this.APIUrlAlumnos, data);
   }
+
+  public CambiarContrasena(alumno: Alumno){
+
+    return this.http.put(this.APIUrlAlumnos + "/" + alumno.id, alumno);
+
+  }
+  
   
 }

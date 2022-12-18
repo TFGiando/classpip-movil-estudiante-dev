@@ -51,7 +51,7 @@ const routes: Routes = [
 
 
   { path: 'correo-cambiar-contrasena', loadChildren: () => import('./correo-cambiar-contrasena/correo-cambiar-contrasena.module').then(m => m.CorreoCambiarContrasenaModule) },
-  { path: 'cambiar-contrasena', loadChildren: () => import('./cambiar-contrasena/cambiar-contrasena.module').then( m => m.CambiarContrasenaPageModule) }
+  { path: 'cambiar-contrasena/:id/:token', loadChildren: () => import('./cambiar-contrasena/cambiar-contrasena.module').then( m => m.CambiarContrasenaPageModule) }
 
 
 

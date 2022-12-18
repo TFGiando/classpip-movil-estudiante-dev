@@ -719,10 +719,8 @@ replay() {
                       buttons: ['OK']
                     });
                     await alert.present();
-                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                     console.log(nuevoAlumno)
                     this.comServer.Registrar(nuevoAlumno);
-                    console.log("EEEEEEEEEEEEEEEEEEEEEEEEE")
                     this.VolverDeRegistro();
                   });
                 } else {
