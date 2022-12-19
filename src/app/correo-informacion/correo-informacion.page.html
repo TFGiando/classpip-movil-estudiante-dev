@@ -6,16 +6,29 @@
 
       <ion-row style="height: 5px"></ion-row>
 
-      <ion-item class="texto1" lines="none">
+      <ion-item lines="none">
+        <ion-input type="text" name="nombre" placeholder="Nombre" requiered [(ngModel)]="nombre"></ion-input>
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
+      </ion-item>
+      <ion-row style="height: 10px"></ion-row>
+
+      <ion-item lines="none">
         <ion-input type="text" name="email" placeholder="email" requiered [(ngModel)]="email"></ion-input>
         <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
-      <ion-row style="height: 5px"></ion-row>
+      <ion-row style="height: 10px"></ion-row>
 
       <ion-item lines="none">
-        <ion-input type="text" name="titulo" placeholder="Titulo" requiered [(ngModel)]="titulo"></ion-input>
+        <ion-input type="text" name="telefono" placeholder="Telefono" requiered [(ngModel)]="telefono"></ion-input>
+        <img width="20" height="20" slot="end" src="../../assets/Login/login-usericon-theme2.svg">  
       </ion-item>
-      <ion-row style="height: 5px"></ion-row>
+      <ion-row style="height: 50px"></ion-row>
+
+
+      <ion-item lines="none">
+        <ion-input type="text" name="asunto" placeholder="Asunto" requiered [(ngModel)]="asunto"></ion-input>
+      </ion-item>
+      <ion-row style="height: 10px"></ion-row>
 
       <ion-item lines="none">
         <ion-input type="text" name="mensaje" placeholder="Escribe aqui tu mensaje" requiered [(ngModel)]="mensaje"></ion-input>

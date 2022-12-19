@@ -3,7 +3,6 @@ import { Socket } from 'ngx-socket-io';
 import { Alumno, AlumnoJuegoDeCompeticionFormulaUno } from '../clases/index';
 import { Observable } from 'rxjs';
 import { PeticionesAPIService } from '.';
-import { MensajeCorreo } from '../clases/MensajeCorreo';
 
 @Injectable({
   providedIn: 'root'
@@ -209,10 +208,6 @@ export class ComServerService {
 
   public EnviarResultadoEvaluacion(alumnoId: number, profesorId: number, juegoId: number, evaluadoId: number, respuesta: any): any {
       this.servidor.emit('respuestaEvaluacion', {alumnoId, profesorId, juegoId, evaluadoId, respuesta});
-  }
-
-  public EnviarCorreoInformacion(email: string, titulo: string, mensaje: string){
-      this.servidor.emit('correoInformacion', {email, titulo, mensaje});
   }
 }
 

@@ -6,8 +6,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { WheelSelector } from '@ionic-native/wheel-selector/ngx';
 import { AlertController, LoadingController, NavController, Platform } from '@ionic/angular';
 import { Alumno } from '../clases';
-import { MensajeCorreo } from '../clases/MensajeCorreo';
 import { ComServerService, PeticionesAPIService, SesionService } from '../servicios';
+import emailJS from '@emailjs/browser'
 
 @Component({
   selector: 'app-correo-informacion',
@@ -15,14 +15,15 @@ import { ComServerService, PeticionesAPIService, SesionService } from '../servic
   styleUrls: ['./correo-informacion.page.scss'],
 })
 export class CorreoInformacionComponent {
+  nombre: string;
   email: string;
-  titulo: string;
+  telefono: number;
+  asunto: string;
   mensaje: string;
-
-  mensajeCorreo: MensajeCorreo
 
   correoInformacion = true;
 
+  
   constructor(
     private route: Router,
     public navCtrl: NavController,
@@ -44,13 +45,7 @@ export class CorreoInformacionComponent {
 
   }
 
-  async EnviarCorreo(){
-    console.log(this.email)
-    const nuevoMensaje = new MensajeCorreo (
-    this.email,
-    this.titulo,
-    this.mensaje
-    )
+  async EnviarCorreo() {
 
     if (this.email === undefined) {
       const alert = await this.alertController.create({
@@ -59,23 +54,42 @@ export class CorreoInformacionComponent {
       });
       await alert.present();
     } else {
-      this.comServer.EnviarCorreoInformacion(this.email, this.titulo, this.mensaje)
-      console.log("EEEEEEESSSSSSSAAAAAAAAA")
-      console.log(nuevoMensaje)
-      const alert = await this.alertController.create({
-        header: 'Mensaje enviado con éxito',
-        buttons: [
-          {
-            text: 'OK',
-            handler: () => {
-              console.log('Confirm Ok');
-            }
+
+      console.log(this.asunto)
+      console.log('voy a enviar emial de ' + this.email);
+      emailJS.init('pVnnpc_96wrNsI_Jg')
+      const serviceID = 'default_service';
+      const templateID = 'template_n4l4l5r';
+      const templateParams = {
+        nombre: this.nombre,
+        email: this.email,
+        telefono: this.telefono,
+        asunto: this.asunto,
+        mensaje: this.mensaje,
+      }
+
+      emailJS.send(serviceID, templateID, templateParams)
+        .then(function (response) {
+          console.log("mensaje enviado", response)
+        }, function (error) {
+          console.log("mensaje no enviado", error)
+        });
+    };
+
+    const alert = await this.alertController.create({
+      header: 'Mensaje enviado con éxito',
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('Confirm Ok');
           }
-        ]
-      });
-      await alert.present();
-    }
+        }
+      ]
+    });
+    await alert.present();
   }
+
 
   GoToInicio() {
     this.route.navigateByUrl('/home');
