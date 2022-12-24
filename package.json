@@ -34,6 +34,7 @@
     "@capacitor/local-notifications": "^4.1.2",
     "@capacitor/splash-screen": "^4.1.1",
     "@capacitor/status-bar": "^4.0.1",
+    "@emailjs/browser": "^3.10.0",
     "@ionic-native/camera": "^5.30.0",
     "@ionic-native/core": "^5.30.0",
     "@ionic-native/file": "^5.30.0",

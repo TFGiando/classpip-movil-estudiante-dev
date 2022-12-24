@@ -739,10 +739,9 @@ replay() {
       this.route.navigateByUrl('/correo-cambiar-contrasena');
     } 
 
-    /*
-    GoCambiarContrasena(){
-      this.route.navigateByUrl('/cambiar-contrasena');  
-    }*/
+    GoCorreoInformacion() {
+      this.route.navigateByUrl('/correo-informacion');
+    }
 }
 
 
