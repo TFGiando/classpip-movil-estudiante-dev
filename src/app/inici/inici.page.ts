@@ -1,4 +1,7 @@
 import { SwiperComponent, SwiperModule } from 'swiper/angular';
+import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
+import { ComServerService } from './../servicios/com-server.service';
 import { NoopAnimationPlayer } from '@angular/animations';
 import { AfterContentChecked, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SesionService } from '../servicios/sesion.service';
@@ -19,7 +22,7 @@ import { ThisReceiver } from '@angular/compiler/src/expression_parser/ast';
   styleUrls: ['./inici.page.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class IniciPage implements OnInit,AfterContentChecked {
+export class IniciPage implements OnInit, AfterContentChecked {
 
   @ViewChild('swiper') swiper: SwiperComponent;
   // @ViewChild(IonSlides) slides: IonSlides;
@@ -40,14 +43,21 @@ export class IniciPage implements OnInit,AfterContentChecked {
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
-    private calculos: CalculosService
-  ) { }
+    private calculos: CalculosService,
+    private socket: Socket
+  ) {
+    this.esperarCambioStatusJuegos().subscribe(mensaje => {
+      console.log(`Este es el mensaje: ${mensaje}`);
+      this.DameJuegosAlumno(this.id);
+    })
+
+  }
 
 
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
     console.log('Este es el id del alumno que se ha logado: ' + this.id);
-    this.DameJuegosAlumno (this.id);
+    this.DameJuegosAlumno(this.id);
     // this.calculos.DameJuegosAlumno_back(this.id)
     //   .subscribe(listas => {
     //     this.JuegosActivos = listas.activos;
@@ -56,13 +66,13 @@ export class IniciPage implements OnInit,AfterContentChecked {
   }
 
   ngAfterContentChecked(): void {
-    if(this.swiper){
+    if (this.swiper) {
       this.swiper.updateSwiper([]);
     }
   }
 
-  async DameJuegosAlumno (id) {
-    const listas =  await this.calculos.DameJuegosAlumno(id);
+  async DameJuegosAlumno(id) {
+    const listas = await this.calculos.DameJuegosAlumno(id);
     this.JuegosActivos = listas.activos;
 
   }
@@ -71,7 +81,7 @@ export class IniciPage implements OnInit,AfterContentChecked {
   JuegoSeleccionado(juego: any) {
     // Registrar el Acceso al Juego
     this.peticionesAPI.DameGrupo(juego.grupoId).subscribe((grupo) => {
-      
+
       // tslint:disable-next-line:max-line-length
       const evento: Evento = new Evento(2, new Date(), grupo.profesorId, this.sesion.DameAlumno().id, undefined, juego.id, juego.NombreJuego, juego.Tipo);
       this.calculos.RegistrarEvento(evento);
@@ -81,7 +91,7 @@ export class IniciPage implements OnInit,AfterContentChecked {
       //   console.log(err); 
       // });
     }, (err) => {
-      console.log(err); 
+      console.log(err);
     });
 
     this.sesion.TomaJuego(juego);
@@ -118,7 +128,7 @@ export class IniciPage implements OnInit,AfterContentChecked {
     }
   }
 
- 
+
 
   doCheck() {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
@@ -127,7 +137,7 @@ export class IniciPage implements OnInit,AfterContentChecked {
     const prom1 = this.swiper.swiperRef.isBeginning;
     const prom2 = this.swiper.swiperRef.isEnd;
 
-    
+
     Promise.all([prom1, prom2]).then((data) => {
       console.log("Esta es data 0:")
       console.log(data[0]);
@@ -153,5 +163,17 @@ export class IniciPage implements OnInit,AfterContentChecked {
     this.swiper.swiperRef.slidePrev();
   }
 
+
+  esperarCambioStatusJuegos() {
+
+    let observable = new Observable( observer => {
+      this.socket.on('nuevoStatusJuego', (mensaje) => {
+        console.log('Nuevo status de juego: ' + mensaje);
+        observer.next(mensaje);
+      })
+    });
+
+    return observable;
+  }
 
 }
