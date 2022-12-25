@@ -8,6 +8,8 @@ import { Juego, Equipo } from '../clases/index';
 import { Router } from '@angular/router';
 import { JuegoSeleccionadoPage } from '../juego-seleccionado/juego-seleccionado.page';
 import { IonSlides } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-mis-juegos-inactivos',
@@ -33,21 +35,27 @@ export class MisJuegosInactivosPage implements OnInit {
     public navCtrl: NavController,
     private sesion: SesionService,
     private peticionesAPI: PeticionesAPIService,
-    private calculos: CalculosService
-  ) { }
- 
+    private calculos: CalculosService,
+    private socket: Socket
+  ) {
+    this.esperarCambioStatusJuegos().subscribe(mensaje => {
+      console.log(`Este es el mensaje: ${mensaje}`);
+      this.DameJuegosAlumno(this.id);
+    })
+  }
+
   ngOnInit() {
     this.id = this.sesion.DameAlumno().id;
     console.log('Este es el id del alumno que se ha logado: ' + this.id);
     this.DameJuegosAlumno(this.id);
-   
+
   }
-  async DameJuegosAlumno (id) {
-    const listas =  await this.calculos.DameJuegosAlumno(id);
+  async DameJuegosAlumno(id) {
+    const listas = await this.calculos.DameJuegosAlumno(id);
     this.JuegosInactivos = listas.inactivos;
   }
 
-  
+
 
   JuegoSeleccionado(juego: any) {
 
@@ -72,26 +80,26 @@ export class MisJuegosInactivosPage implements OnInit {
     } else if (juego.Tipo === 'Juego De Votación Todos A Uno') {
       this.navCtrl.navigateForward('/juego-votacion-todos-auno');
     } else if (juego.Tipo === 'Juego De Cuestionario de Satisfacción') {
-        this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
+      this.navCtrl.navigateForward('/juego-cuestionario-satisfaccion');
     } else {
       this.navCtrl.navigateForward('/juego-colleccion');
     }
   }
 
-  
+
   doCheck() {
     // Para decidir si hay que mostrar los botones de previo o siguiente slide
     // const prom1 = this.slides.isBeginning();
     // const prom2 = this.slides.isEnd();
     const prom1 = this.swiper.swiperRef.isBeginning;
     const prom2 = this.swiper.swiperRef.isEnd;
-  
+
     Promise.all([prom1, prom2]).then((data) => {
       data[0] ? this.disablePrevBtn = true : this.disablePrevBtn = false;
       data[1] ? this.disableNextBtn = true : this.disableNextBtn = false;
     });
   }
-  
+
   next() {
     // this.slides.slideNext();
     this.swiper.swiperRef.slideNext();
@@ -100,6 +108,18 @@ export class MisJuegosInactivosPage implements OnInit {
   prev() {
     // this.slides.slidePrev();
     this.swiper.swiperRef.slidePrev();
+  }
+
+  esperarCambioStatusJuegos() {
+
+    let observable = new Observable( observer => {
+      this.socket.on('nuevoStatusJuego', (mensaje) => {
+        console.log('Nuevo status de juego: ' + mensaje);
+        observer.next(mensaje);
+      })
+    });
+
+    return observable;
   }
 
 
